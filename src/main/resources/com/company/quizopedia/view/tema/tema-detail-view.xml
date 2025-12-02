@@ -29,6 +29,7 @@
             <textArea id="descricaoField" property="descricao"/>
             <fileUploadField id="iconeField" clearButtonVisible="true" fileNameVisible="true" property="icone"
                              acceptedFileTypes="image/jpeg, image/png, image/webp"/>
+            <textField id="referenciaPontuacaoField" property="referenciaPontuacao"/>
         </formLayout>
         <h4 text="msg://com.company.quizopedia.entity/Tema.conteudos"/>
         <hbox id="conteudosButtonsPanel" classNames="buttons-panel">

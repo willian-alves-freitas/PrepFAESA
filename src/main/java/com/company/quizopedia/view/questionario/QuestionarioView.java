@@ -4,6 +4,7 @@ package com.company.quizopedia.view.questionario;
 import com.company.quizopedia.app.Option;
 import com.company.quizopedia.app.Question;
 import com.company.quizopedia.app.Quiz;
+import com.company.quizopedia.entity.*;
 import com.company.quizopedia.view.main.MainView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H4;
@@ -12,6 +13,8 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.router.Route;
+import io.jmix.core.DataManager;
+import io.jmix.core.security.CurrentAuthentication;
 import io.jmix.flowui.UiComponents;
 import io.jmix.flowui.view.StandardView;
 import io.jmix.flowui.view.ViewComponent;
@@ -19,51 +22,91 @@ import io.jmix.flowui.view.ViewController;
 import io.jmix.flowui.view.ViewDescriptor;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Route(value = "questionario-view", layout = MainView.class)
 @ViewController(id = "QuestionarioView")
 @ViewDescriptor(path = "questionario-view.xml")
 public class QuestionarioView extends StandardView {
-    private Quiz quiz;
-    private String tema;
+
+    private Questionario questionario;
 
     @ViewComponent
     private VerticalLayout vbox;
     @Autowired
     private UiComponents uiComponents;
+    @Autowired
+    private DataManager dataManager;
+    @Autowired
+    private CurrentAuthentication currentAuthentication;
 
-    public void setQuiz(Quiz quiz) {
-        this.quiz = quiz;
-    }
+    public void setQuiz(Quiz quiz, Tema tema) {
+        Questionario questionario = dataManager.create(Questionario.class);
+        questionario.setEstado(Estado.INICIADO);
+        questionario.setTema(tema);
 
-    public Quiz getQuiz(Quiz quiz) {
-        return this.quiz;
+        List<Questao> questoes = new LinkedList<Questao>();
+        List<Opcao> opcoes;
+        List<Question> questions = quiz.getQuiz();
+        Opcao opcao;
+        Questao questao;
+        for (Question question: questions) {
+            questao = dataManager.create(Questao.class);
+            questao.setQuestionario(questionario);
+            questao.setEnunciado(question.getQuestion());
+
+            opcoes = new LinkedList<Opcao>();
+            for (Option option: question.getOptions()) {
+                opcao = dataManager.create(Opcao.class);
+                opcao.setQuestao(questao);
+                opcao.setDescricao(option.getText());
+
+                if (option.getId().equals(question.getCorrectAnswer()))
+                    opcao.setCorreta(true);
+                else
+                    opcao.setCorreta(false);
+
+                opcao.setExplicacao(question.getExplanations().get(option.getId()));
+
+                opcoes.add(opcao);
+            }
+
+            questao.setOpcoes(opcoes);
+
+            questoes.add(questao);
+        }
+
+        questionario.setQuestoes(questoes);
+        questionario.setUser((User) currentAuthentication.getUser());
+        questionario.setRealizacao(LocalDateTime.now());
+        questionario.setPontuacaoMaxima(questionario.getTema().getReferenciaPontuacao());
+
+        dataManager.save(questionario);
+
+        this.questionario = questionario;
     }
 
     public void buildLayout() {
-        if (quiz == null)
+        if (questionario == null)
             return;
 
-        List<RadioButtonGroup> questions = new ArrayList<RadioButtonGroup>();
+        List<RadioButtonGroup> radioButtonGroups = new ArrayList<RadioButtonGroup>();
         VerticalLayout layoutQuestao;
         List<String> options;
-        for (Question question: quiz.getQuiz()) {
-            layoutQuestao = uiComponents.create(VerticalLayout.class);
-            H4 titulo = uiComponents.create(H4.class);
-            titulo.setText(question.getQuestion());
-            layoutQuestao.add(titulo);
 
-            options = new ArrayList<String>();
-            for (Option option: question.getOptions())
-                options.add(option.getId()+") "+option.getText());
+        for (Questao questao: questionario.getQuestoes()) {
+            layoutQuestao = uiComponents.create(VerticalLayout.class);
 
             RadioButtonGroup radioButtonGroup = uiComponents.create(RadioButtonGroup.class);
-            radioButtonGroup.setItems(options);
+            radioButtonGroup.setLabel(questao.getEnunciado());
+            radioButtonGroup.setItems(questao.getOpcoes());
             radioButtonGroup.setThemeName("vertical");
+            radioButtonGroup.setRequired(true);
             layoutQuestao.add(radioButtonGroup);
-            questions.add(radioButtonGroup);
+            radioButtonGroups.add(radioButtonGroup);
 
             vbox.add(layoutQuestao);
         }
@@ -76,7 +119,15 @@ public class QuestionarioView extends StandardView {
         hLayout.add(save);
 
         save.addClickListener(event -> {
-
+            boolean validado = true;
+            for (RadioButtonGroup radioButtonGroup: radioButtonGroups) {
+                if (radioButtonGroup.getValue() != null)
+                    radioButtonGroup.setEnabled(false);
+                else
+                    validado = false;
+            }
+            if (validado)
+                System.out.println("Validado");
         });
 
         Button cancel = uiComponents.create(Button.class);
@@ -95,11 +146,4 @@ public class QuestionarioView extends StandardView {
         vbox.add(hLayout);
     }
 
-    public void setTema(String nome) {
-        this.tema = tema;
-    }
-
-    public String getTema() {
-        return this.tema;
-    }
 }

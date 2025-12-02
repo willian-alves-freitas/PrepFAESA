@@ -75,7 +75,7 @@ public class MainView extends StandardMainView {
 
                 // Initialize client
                 GroqClient client = GroqClient.builder()
-                        .apiKey("INSIRA SUA CHAVE DE API AQUI")
+                        .apiKey("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")
                         .timeout(Duration.ofSeconds(30))
                         .maxRetries(3)
                         .build();
@@ -130,9 +130,9 @@ public class MainView extends StandardMainView {
                     System.out.println(quiz.getQuiz().size());
 
                     DialogWindow<QuestionarioView> window = dialogWindows.view(this, QuestionarioView.class).build();
-                    window.getView().setQuiz(quiz);
-                    window.getView().setTema(tema.getNome());
+                    window.getView().setQuiz(quiz, tema);
                     window.getView().buildLayout();
+
                     window.open();
                 }
 
