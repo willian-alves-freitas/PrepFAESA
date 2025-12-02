@@ -26,7 +26,7 @@
             <textArea id="descricaoField" property="descricao"/>
             <fileStorageUploadField id="arquivoField" clearButtonVisible="true" fileNameVisible="true"
                                     property="arquivo"
-                                    acceptedFileTypes="application/pdf, application/xml, application/json"/>
+                                    acceptedFileTypes="application/pdf"/>
         </formLayout>
         <hbox id="detailActions">
             <button id="saveAndCloseButton" action="saveAction"/>

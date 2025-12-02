@@ -46,6 +46,7 @@ dependencies {
     testImplementation 'io.jmix.flowui:jmix-flowui-test-assist'
 
     implementation group: 'io.github.debajitkumarphukan', name: 'groq-java-sdk', version: '1.0.4'
+    implementation 'org.apache.pdfbox:pdfbox:2.0.29'
 }
 
 configurations.implementation {

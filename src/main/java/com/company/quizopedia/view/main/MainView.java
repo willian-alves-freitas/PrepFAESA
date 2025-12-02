@@ -14,14 +14,23 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import io.jmix.core.DataManager;
+import io.jmix.core.FileRef;
+import io.jmix.core.FileStorage;
+import io.jmix.core.FileStorageLocator;
 import io.jmix.core.security.CurrentAuthentication;
 import io.jmix.flowui.*;
 import io.jmix.flowui.app.main.StandardMainView;
 import io.jmix.flowui.component.SupportsTypedValue;
 import io.jmix.flowui.component.textfield.TypedTextField;
 import io.jmix.flowui.view.*;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Duration;
 import java.util.List;
 
@@ -48,6 +57,8 @@ public class MainView extends StandardMainView {
     private DialogWindows dialogWindows;
     @Autowired
     private DataManager dataManager;
+    @Autowired
+    private FileStorageLocator fileStorageLocator;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -79,7 +90,29 @@ public class MainView extends StandardMainView {
                         .maxRetries(3)
                         .build();
 
+                // Monta a string de contexto
+                String contexto = "";
+                for(Conteudo conteudo: tema.getConteudos()) {
+                    File file = new File(conteudo.getArquivo().getPath());
+                    try {
+                        FileRef fileRef = conteudo.getArquivo(); // supondo que seja um FileRef
+                        FileStorage fileStorage = fileStorageLocator.getDefault();
+                        InputStream inputStream = fileStorage.openStream(fileRef);
+                        PDDocument document = Loader.loadPDF(inputStream.readAllBytes());
+                        PDFTextStripper stripper = new PDFTextStripper();
+//                        stripper.setEndPage(10);
+                        contexto += stripper.getText(document);
+                        document.close();
+                        System.out.println(contexto);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    contexto += "\n\n\n\n";
+                }
+
                 // Create chat completion
+                ChatMessage context = new ChatMessage("system", "Use este contexto: "+contexto);
+
                 ChatMessage message = new ChatMessage("user", "Crie um questionário com 5 perguntas de múltipla escolha sobre " + tema.getNome() + ".\n" +
                         "Não use aspas simples (') nem crases (`), utilize apenas aspas duplas (\"). Responda exclusivamente em JSON no seguinte formato:\n" +
                         "\n" +
@@ -103,8 +136,8 @@ public class MainView extends StandardMainView {
                         "    }\n" +
                         "  ]\n" +
                         "}\n");
-                ChatCompletionRequest request = new ChatCompletionRequest("openai/gpt-oss-20b", List.of(message));
-                request.setMaxTokens(16384);
+                ChatCompletionRequest request = new ChatCompletionRequest("openai/gpt-oss-20b", List.of(context, message));
+                request.setMaxTokens(4096);
                 request.setTemperature(0.7);
 
                 var response = client.chat().createCompletion(request);
