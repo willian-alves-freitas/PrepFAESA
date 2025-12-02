@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      title="msg://turmaDetailView.title"
+      focusComponent="form">
+    <data>
+        <instance id="turmaDc"
+                  class="com.company.quizopedia.entity.Turma">
+            <fetchPlan extends="_base">
+                <property name="temas" fetchPlan="_base"/>
+                <property name="alunos" fetchPlan="_base"/>
+            </fetchPlan>
+            <loader id="turmaDl"/>
+            <collection id="temasDc" property="temas"/>
+        </instance>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+    </facets>
+    <actions>
+        <action id="saveAction" type="detail_saveClose"/>
+        <action id="closeAction" type="detail_close"/>
+    </actions>
+    <layout>
+        <formLayout id="form" dataContainer="turmaDc">
+            <responsiveSteps>
+                <responsiveStep minWidth="0" columns="1"/>
+                <responsiveStep minWidth="40em" columns="2"/>
+            </responsiveSteps>
+            <textArea id="codigoField" property="codigo" height="5.5em"/>
+        </formLayout>
+        <h4 text="msg://com.company.quizopedia.entity/Turma.temas"/>
+        <hbox id="temasButtonsPanel" classNames="buttons-panel">
+            <button action="temasDataGrid.addAction"/>
+            <button action="temasDataGrid.excludeAction"/>
+        </hbox>
+        <dataGrid id="temasDataGrid" dataContainer="temasDc" width="100%" minHeight="20em">
+            <actions>
+                <action id="addAction" type="list_add"/>
+                <action id="excludeAction" type="list_exclude"/>
+            </actions>
+            <columns>
+                <column property="nome"/>
+                <column property="descricao"/>
+            </columns>
+        </dataGrid>
+        <hbox id="detailActions">
+            <button id="saveAndCloseButton" action="saveAction"/>
+            <button id="closeButton" action="closeAction"/>
+        </hbox>
+    </layout>
+</view>
