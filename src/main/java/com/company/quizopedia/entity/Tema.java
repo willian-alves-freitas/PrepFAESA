@@ -37,10 +37,22 @@ public class Tema {
     private List<Conteudo> conteudos;
 
     @JoinTable(name = "TURMA_TEMA_LINK",
-            joinColumns = @JoinColumn(name = "TEMA_ID"),
-            inverseJoinColumns = @JoinColumn(name = "TURMA_ID"))
+            joinColumns = @JoinColumn(name = "TEMA_ID", referencedColumnName = "ID"),
+            inverseJoinColumns = @JoinColumn(name = "TURMA_ID", referencedColumnName = "ID"))
     @ManyToMany
     private List<Turma> turmas;
+
+    @Composition
+    @OneToMany(mappedBy = "tema")
+    private List<Questionario> questionarios;
+
+    public List<Questionario> getQuestionarios() {
+        return questionarios;
+    }
+
+    public void setQuestionarios(List<Questionario> questionarios) {
+        this.questionarios = questionarios;
+    }
 
     public List<Turma> getTurmas() {
         return turmas;

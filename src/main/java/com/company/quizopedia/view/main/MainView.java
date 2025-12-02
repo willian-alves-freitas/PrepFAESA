@@ -13,6 +13,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.AbstractStreamResource;
 import io.jmix.core.security.CurrentAuthentication;
 import io.jmix.flowui.UiComponents;
+import io.jmix.flowui.ViewNavigators;
 import io.jmix.flowui.app.main.StandardMainView;
 import io.jmix.flowui.component.SupportsTypedValue;
 import io.jmix.flowui.component.textfield.TypedTextField;
@@ -40,6 +41,8 @@ public class MainView extends StandardMainView {
     private CurrentAuthentication currentAuthentication;
     @Autowired
     private UiComponents uiComponents;
+    @Autowired
+    private ViewNavigators viewNavigators;
 
     @Subscribe
     public void onInit(final InitEvent event) {
