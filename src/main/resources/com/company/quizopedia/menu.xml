@@ -3,6 +3,7 @@
 
     <menu id="application" title="msg://com.company.quizopedia/menu.application.title" opened="true">
         <item view="User.list" title="msg://com.company.quizopedia.view.user/UserListView.title"/>
+        <item view="Tema.list" title="msg://com.company.quizopedia.view.tema/temaListView.title"/>
     </menu>
 
 </menu-config>
