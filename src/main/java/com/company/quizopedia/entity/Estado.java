@@ -7,10 +7,9 @@ import org.springframework.lang.Nullable;
 
 public enum Estado implements EnumClass<String> {
 
-    CRIADO("A"),
-    INICIADO("B"),
-    VENCIDO("C"),
-    FINALIZADO("D");
+    INICIADO("A"),
+    VENCIDO("B"),
+    FINALIZADO("C");
 
     private final String id;
 

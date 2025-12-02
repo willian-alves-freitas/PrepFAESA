@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1" author="Quizopedia">
+        <createTable tableName="OPCAO">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_OPCAO"/>
+            </column>
+            <column name="DESCRICAO" type="CLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CORRETA" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+            <column name="QUESTAO_ID" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="2" author="Quizopedia">
+        <createTable tableName="QUESTAO">
+            <column name="ID" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="PK_QUESTAO"/>
+            </column>
+            <column name="ENUNCIADO" type="CLOB">
+                <constraints nullable="false"/>
+            </column>
+            <column name="RESPOSTA_ID" type="UUID"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="3" author="Quizopedia">
+        <createIndex indexName="IDX_OPCAO_QUESTAO" tableName="OPCAO">
+            <column name="QUESTAO_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="QUESTAO_ID" baseTableName="OPCAO" constraintName="FK_OPCAO_ON_QUESTAO"
+                                 onDelete="CASCADE" referencedColumnNames="ID" referencedTableName="QUESTAO"/>
+    </changeSet>
+    <changeSet id="4" author="Quizopedia">
+        <createIndex indexName="IDX_QUESTAO_RESPOSTA" tableName="QUESTAO">
+            <column name="RESPOSTA_ID"/>
+        </createIndex>
+
+        <addForeignKeyConstraint baseColumnNames="RESPOSTA_ID" baseTableName="QUESTAO"
+                                 constraintName="FK_QUESTAO_ON_RESPOSTA" referencedColumnNames="ID"
+                                 referencedTableName="OPCAO"/>
+    </changeSet>
+</databaseChangeLog>
