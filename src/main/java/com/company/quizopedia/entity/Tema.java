@@ -46,6 +46,18 @@ public class Tema {
     @OneToMany(mappedBy = "tema")
     private List<Questionario> questionarios;
 
+    @Column(name = "REFERENCIA_PONTUACAO", nullable = false)
+    @NotNull
+    private Integer referenciaPontuacao;
+
+    public Integer getReferenciaPontuacao() {
+        return referenciaPontuacao;
+    }
+
+    public void setReferenciaPontuacao(Integer referenciaPontuacao) {
+        this.referenciaPontuacao = referenciaPontuacao;
+    }
+
     public List<Questionario> getQuestionarios() {
         return questionarios;
     }

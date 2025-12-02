@@ -1,8 +1,11 @@
 package com.company.quizopedia.entity;
 
 import io.jmix.core.DeletePolicy;
+import io.jmix.core.MetadataTools;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
+import io.jmix.core.metamodel.annotation.DependsOnProperties;
+import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -33,6 +36,19 @@ public class Opcao {
     @JoinColumn(name = "QUESTAO_ID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private Questao questao;
+
+    @Column(name = "EXPLICACAO", nullable = false)
+    @Lob
+    @NotNull
+    private String explicacao;
+
+    public String getExplicacao() {
+        return explicacao;
+    }
+
+    public void setExplicacao(String explicacao) {
+        this.explicacao = explicacao;
+    }
 
     public Questao getQuestao() {
         return questao;
@@ -66,4 +82,9 @@ public class Opcao {
         this.id = id;
     }
 
+    @InstanceName
+    @DependsOnProperties({"descricao"})
+    public String getInstanceName(MetadataTools metadataTools) {
+        return metadataTools.format(descricao);
+    }
 }

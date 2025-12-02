@@ -3,12 +3,14 @@ package com.company.quizopedia.entity;
 import io.jmix.core.DeletePolicy;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.entity.annotation.OnDeleteInverse;
+import io.jmix.core.metamodel.annotation.Composition;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @JmixEntity
@@ -23,10 +25,13 @@ public class Questionario {
     @Id
     private UUID id;
 
+    @Composition
+    @OneToMany(mappedBy = "questionario", cascade = CascadeType.PERSIST)
+    private List<Questao> questoes;
+
     @NotNull
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "REALIZACAO", nullable = false)
-    private Date realizacao;
+    private LocalDateTime realizacao;
 
     @Column(name = "ESTADO", nullable = false)
     @NotNull
@@ -46,6 +51,22 @@ public class Questionario {
     @Column(name = "PONTUACAO_MAXIMA", nullable = false)
     @NotNull
     private Integer pontuacaoMaxima;
+
+    public void setRealizacao(LocalDateTime realizacao) {
+        this.realizacao = realizacao;
+    }
+
+    public LocalDateTime getRealizacao() {
+        return realizacao;
+    }
+
+    public List<Questao> getQuestoes() {
+        return questoes;
+    }
+
+    public void setQuestoes(List<Questao> questoes) {
+        this.questoes = questoes;
+    }
 
     public Integer getPontuacaoMaxima() {
         return pontuacaoMaxima;
@@ -77,14 +98,6 @@ public class Questionario {
 
     public void setEstado(Estado estado) {
         this.estado = estado == null ? null : estado.getId();
-    }
-
-    public Date getRealizacao() {
-        return realizacao;
-    }
-
-    public void setRealizacao(Date realizacao) {
-        this.realizacao = realizacao;
     }
 
     public UUID getId() {

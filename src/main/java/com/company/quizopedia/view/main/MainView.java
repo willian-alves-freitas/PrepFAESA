@@ -75,7 +75,7 @@ public class MainView extends StandardMainView {
 
                 // Initialize client
                 GroqClient client = GroqClient.builder()
-                        .apiKey("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")
+                        .apiKey("INSIRA SUA CHAVE DE API AQUI")
                         .timeout(Duration.ofSeconds(30))
                         .maxRetries(3)
                         .build();

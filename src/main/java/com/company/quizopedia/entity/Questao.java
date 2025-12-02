@@ -1,6 +1,8 @@
 package com.company.quizopedia.entity;
 
+import io.jmix.core.DeletePolicy;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
+import io.jmix.core.entity.annotation.OnDeleteInverse;
 import io.jmix.core.metamodel.annotation.Composition;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
@@ -11,7 +13,8 @@ import java.util.UUID;
 
 @JmixEntity
 @Table(name = "QUESTAO", indexes = {
-        @Index(name = "IDX_QUESTAO_RESPOSTA", columnList = "RESPOSTA_ID")
+        @Index(name = "IDX_QUESTAO_RESPOSTA", columnList = "RESPOSTA_ID"),
+        @Index(name = "IDX_QUESTAO_QUESTIONARIO", columnList = "QUESTIONARIO_ID")
 })
 @Entity
 public class Questao {
@@ -26,12 +29,25 @@ public class Questao {
     private String enunciado;
 
     @Composition
-    @OneToMany(mappedBy = "questao")
+    @OneToMany(mappedBy = "questao", cascade = CascadeType.PERSIST)
     private List<Opcao> opcoes;
 
     @JoinColumn(name = "RESPOSTA_ID")
     @OneToOne(fetch = FetchType.LAZY)
     private Opcao opcaoSelecionada;
+
+    @OnDeleteInverse(DeletePolicy.CASCADE)
+    @JoinColumn(name = "QUESTIONARIO_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Questionario questionario;
+
+    public Questionario getQuestionario() {
+        return questionario;
+    }
+
+    public void setQuestionario(Questionario questionario) {
+        this.questionario = questionario;
+    }
 
     public Opcao getOpcaoSelecionada() {
         return opcaoSelecionada;
