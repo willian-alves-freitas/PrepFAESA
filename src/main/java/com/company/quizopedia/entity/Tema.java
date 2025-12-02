@@ -5,6 +5,7 @@ import io.jmix.core.metamodel.annotation.Composition;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,6 +31,7 @@ public class Tema {
     @Lob
     private String descricao;
 
+    @Size(message = "{msg://com.company.quizopedia.entity/Tema.conteudos.validation.Size}", min = 1)
     @Composition
     @OneToMany(mappedBy = "tema")
     private List<Conteudo> conteudos;
