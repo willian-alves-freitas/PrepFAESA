@@ -1,7 +1,10 @@
 package com.company.quizopedia.entity;
 
+import io.jmix.core.MetadataTools;
 import io.jmix.core.entity.annotation.JmixGeneratedValue;
 import io.jmix.core.metamodel.annotation.Composition;
+import io.jmix.core.metamodel.annotation.DependsOnProperties;
+import io.jmix.core.metamodel.annotation.InstanceName;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -114,4 +117,9 @@ public class Tema {
         this.id = id;
     }
 
+    @InstanceName
+    @DependsOnProperties({"nome"})
+    public String getInstanceName(MetadataTools metadataTools) {
+        return metadataTools.format(nome);
+    }
 }

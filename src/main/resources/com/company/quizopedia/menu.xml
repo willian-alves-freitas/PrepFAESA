@@ -5,6 +5,8 @@
         <item view="User.list" title="msg://com.company.quizopedia.view.user/UserListView.title"/>
         <item view="Tema.list" title="msg://com.company.quizopedia.view.tema/temaListView.title"/>
         <item view="Turma.list" title="msg://com.company.quizopedia.view.turma/turmaListView.title"/>
+        <item view="Questionario.list"
+              title="msg://com.company.quizopedia.view.questionario/questionarioListView.title"/>
     </menu>
     <menu id="security">
         <item view="sec_ResourceRoleModel.list"

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<view xmlns="http://jmix.io/schema/flowui/view"
+      xmlns:c="http://jmix.io/schema/flowui/jpql-condition"
+      title="msg://questionarioListView.title"
+      focusComponent="questionariosDataGrid">
+    <data>
+        <collection id="questionariosDc"
+                    class="com.company.quizopedia.entity.Questionario">
+            <fetchPlan extends="_base">
+                <property name="tema" fetchPlan="_local"/>
+                <property name="user" fetchPlan="_instance_name"/>
+            </fetchPlan>
+            <loader id="questionariosDl" readOnly="true">
+                <query>
+                    <![CDATA[select e from Questionario e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <facets>
+        <dataLoadCoordinator auto="true"/>
+        <urlQueryParameters>
+            <genericFilter component="genericFilter"/>
+            <pagination component="pagination"/>
+        </urlQueryParameters>
+    </facets>
+    <actions>
+        <action id="selectAction" type="lookup_select"/>
+        <action id="discardAction" type="lookup_discard"/>
+    </actions>
+    <layout>
+        <genericFilter id="genericFilter"
+                       dataLoader="questionariosDl">
+            <properties include=".*"/>
+        </genericFilter>
+        <hbox id="buttonsPanel" classNames="buttons-panel">
+            <button id="readButton" action="questionariosDataGrid.readAction"/>
+            <simplePagination id="pagination" dataLoader="questionariosDl"/>
+        </hbox>
+        <dataGrid id="questionariosDataGrid"
+                  width="100%"
+                  minHeight="20em"
+                  dataContainer="questionariosDc"
+                  columnReorderingAllowed="true">
+            <actions>
+                <action id="readAction" type="list_read"/>
+            </actions>
+            <columns resizable="true">
+                <column property="realizacao"/>
+                <column property="estado"/>
+                <column property="tema"/>
+                <column property="user"/>
+                <column property="pontuacaoMaxima"/>
+            </columns>
+        </dataGrid>
+        <hbox id="lookupActions" visible="false">
+            <button id="selectButton" action="selectAction"/>
+            <button id="discardButton" action="discardAction"/>
+        </hbox>
+    </layout>
+</view>

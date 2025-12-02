@@ -1,22 +1,17 @@
 package com.company.quizopedia.view.main;
 
-import com.company.quizopedia.app.Option;
 import com.company.quizopedia.app.Question;
 import com.company.quizopedia.app.Quiz;
-import com.company.quizopedia.entity.Tema;
-import com.company.quizopedia.entity.User;
+import com.company.quizopedia.entity.*;
 import com.company.quizopedia.view.questionario.QuestionarioView;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.groq.sdk.client.GroqClient;
 import com.groq.sdk.models.chat.ChatCompletionRequest;
 import com.groq.sdk.models.chat.ChatMessage;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.router.Route;
 import io.jmix.core.security.CurrentAuthentication;
 import io.jmix.flowui.*;
@@ -56,7 +51,8 @@ public class MainView extends StandardMainView {
 
         final User user = (User) currentAuthentication.getUser();
         List<Tema> temas = user.getTurma().getTemas();
-        contadorMoedas.setText(String.format("%d moedas", 200));
+
+        calcMoedas();
 
         HorizontalLayout layoutAuxiliar;
         for (Tema tema: temas) {
@@ -134,6 +130,8 @@ public class MainView extends StandardMainView {
                     window.getView().buildLayout();
 
                     window.open();
+
+                    calcMoedas();
                 }
 
             });
@@ -167,5 +165,24 @@ public class MainView extends StandardMainView {
                 vbox.add(layoutAuxiliar);
             }
         }
+    }
+
+    private void calcMoedas() {
+        final User user = (User) currentAuthentication.getUser();
+        int coins = 0;
+        for (Questionario questionario: user.getQuestionarios()) {
+            if (questionario.getEstado() == Estado.FINALIZADO) {
+                for (Questao questao: questionario.getQuestoes()) {
+                    if (questao.getOpcaoSelecionada().getCorreta())
+                        coins += questionario.getPontuacaoMaxima() / questionario.getQuestoes().size();
+                }
+            }
+        }
+        contadorMoedas.setText(String.format("%d moedas", coins));
+    }
+
+    @Subscribe
+    public void onBeforeShow(final BeforeShowEvent event) {
+        calcMoedas();
     }
 }

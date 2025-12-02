@@ -6,6 +6,7 @@ import com.company.quizopedia.app.Question;
 import com.company.quizopedia.app.Quiz;
 import com.company.quizopedia.entity.*;
 import com.company.quizopedia.view.main.MainView;
+import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -93,14 +94,14 @@ public class QuestionarioView extends StandardView {
         if (questionario == null)
             return;
 
-        List<RadioButtonGroup> radioButtonGroups = new ArrayList<RadioButtonGroup>();
+        List<RadioButtonGroup<Opcao>> radioButtonGroups = new ArrayList<RadioButtonGroup<Opcao>>();
         VerticalLayout layoutQuestao;
         List<String> options;
 
         for (Questao questao: questionario.getQuestoes()) {
             layoutQuestao = uiComponents.create(VerticalLayout.class);
 
-            RadioButtonGroup radioButtonGroup = uiComponents.create(RadioButtonGroup.class);
+            RadioButtonGroup<Opcao> radioButtonGroup = uiComponents.create(RadioButtonGroup.class);
             radioButtonGroup.setLabel(questao.getEnunciado());
             radioButtonGroup.setItems(questao.getOpcoes());
             radioButtonGroup.setThemeName("vertical");
@@ -120,14 +121,36 @@ public class QuestionarioView extends StandardView {
 
         save.addClickListener(event -> {
             boolean validado = true;
-            for (RadioButtonGroup radioButtonGroup: radioButtonGroups) {
-                if (radioButtonGroup.getValue() != null)
-                    radioButtonGroup.setEnabled(false);
-                else
+            for (RadioButtonGroup<Opcao> radioButtonGroup: radioButtonGroups) {
+                if (radioButtonGroup.getValue() == null) {
                     validado = false;
+                    break;
+                }
             }
-            if (validado)
+            if (validado) {
+                Questao questao;
+                for (int i = 0; i < questionario.getQuestoes().size(); i++) {
+                    questao = questionario.getQuestoes().get(i);
+                    questao.setOpcaoSelecionada(radioButtonGroups.get(i).getValue());
+                    dataManager.save(questao);
+                    radioButtonGroups.get(i).setReadOnly(true);
+
+                    String explicacao = "";
+                    if (questao.getOpcaoSelecionada().getCorreta()) {
+                        explicacao += "Correta! ";
+                    } else {
+                        explicacao += "Incorreta! ";
+                    }
+                    for (Opcao opcao: questao.getOpcoes())
+                        explicacao += opcao.getExplicacao() + "\n";
+                    radioButtonGroups.get(i).setHelperText(explicacao);
+                }
+                questionario.setEstado(Estado.FINALIZADO);
+                save.setEnabled(false);
+                save.setClassName("bg-contrast-50");
+                dataManager.save(questionario);
                 System.out.println("Validado");
+            }
         });
 
         Button cancel = uiComponents.create(Button.class);
