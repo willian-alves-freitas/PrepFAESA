@@ -14,6 +14,8 @@ import com.vaadin.flow.server.AbstractStreamResource;
 import io.jmix.core.security.CurrentAuthentication;
 import io.jmix.flowui.UiComponents;
 import io.jmix.flowui.app.main.StandardMainView;
+import io.jmix.flowui.component.SupportsTypedValue;
+import io.jmix.flowui.component.textfield.TypedTextField;
 import io.jmix.flowui.view.Subscribe;
 import io.jmix.flowui.view.ViewComponent;
 import io.jmix.flowui.view.ViewController;
@@ -50,9 +52,8 @@ public class MainView extends StandardMainView {
         for (Tema tema: temas) {
             layoutAuxiliar = uiComponents.create(HorizontalLayout.class);
             layoutAuxiliar.setPadding(true);
-            layoutAuxiliar.setClassName("bg-primary");
+            layoutAuxiliar.setClassName("bg-primary rounded-l");
             layoutAuxiliar.setWidth("100%");
-            layoutAuxiliar.getStyle().set("border-radius","0.5em");
 
             H5 titulo = uiComponents.create(H5.class);
             titulo.setText(tema.getNome());
@@ -60,12 +61,34 @@ public class MainView extends StandardMainView {
             layoutAuxiliar.add(titulo);
             layoutAuxiliar.getStyle().set("cursor","pointer");
 
-            layoutAuxiliar.addClickListener(event1 -> {
-
-            });
-
             vbox.add(layoutAuxiliar);
         }
 
+    }
+
+    @Subscribe("pesquisaTemas")
+    public void onPesquisaTemasTypedValueChange(final SupportsTypedValue.TypedValueChangeEvent<TypedTextField<?>, ?> event) {
+        vbox.removeAll();
+        final User user = (User) currentAuthentication.getUser();
+        List<Tema> temas = user.getTurma().getTemas();
+        String valorDigitado = event.getValue() == null ? "" : event.getValue().toString();
+
+        HorizontalLayout layoutAuxiliar;
+        for (Tema tema: temas) {
+            if (tema.getNome().contains(valorDigitado)) {
+                layoutAuxiliar = uiComponents.create(HorizontalLayout.class);
+                layoutAuxiliar.setPadding(true);
+                layoutAuxiliar.setClassName("bg-primary rounded-l");
+                layoutAuxiliar.setWidth("100%");
+
+                H5 titulo = uiComponents.create(H5.class);
+                titulo.setText(tema.getNome());
+                titulo.getStyle().set("color","white");
+                layoutAuxiliar.add(titulo);
+                layoutAuxiliar.getStyle().set("cursor","pointer");
+
+                vbox.add(layoutAuxiliar);
+            }
+        }
     }
 }

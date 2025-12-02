@@ -42,8 +42,11 @@
                     <h2 text="Questionários"/>
                 </startSlot>
                 <endSlot>
-                    <icon icon="vaadin:coins"/>
-                    <h5 id="contadorMoedas"/>
+                    <hbox classNames="bg-primary rounded-l" padding="true">
+                        <icon icon="vaadin:coins" color="white"/>
+                        <h5 id="contadorMoedas" css="color: white;" alignSelf="CENTER"
+                        />
+                    </hbox>
                 </endSlot>
             </hbox>
             <textField id="pesquisaTemas" placeholder="msg://pesquisaTemas.placeholder" minWidth="95%"
