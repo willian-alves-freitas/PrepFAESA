@@ -34,7 +34,6 @@
             <properties include=".*"/>
         </genericFilter>
         <hbox id="buttonsPanel" classNames="buttons-panel">
-            <button id="readButton" action="questionariosDataGrid.readAction"/>
             <simplePagination id="pagination" dataLoader="questionariosDl"/>
         </hbox>
         <dataGrid id="questionariosDataGrid"
@@ -43,7 +42,6 @@
                   dataContainer="questionariosDc"
                   columnReorderingAllowed="true">
             <actions>
-                <action id="readAction" type="list_read"/>
             </actions>
             <columns resizable="true">
                 <column property="realizacao"/>
@@ -51,6 +49,7 @@
                 <column property="tema"/>
                 <column property="user"/>
                 <column property="pontuacaoMaxima"/>
+                <column key="pontuacao" header="msg://column.header"/>
             </columns>
         </dataGrid>
         <hbox id="lookupActions" visible="false">

@@ -13,6 +13,7 @@ import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
+import io.jmix.core.DataManager;
 import io.jmix.core.security.CurrentAuthentication;
 import io.jmix.flowui.*;
 import io.jmix.flowui.app.main.StandardMainView;
@@ -45,6 +46,8 @@ public class MainView extends StandardMainView {
     private Notifications notifications;
     @Autowired
     private DialogWindows dialogWindows;
+    @Autowired
+    private DataManager dataManager;
 
     @Subscribe
     public void onInit(final InitEvent event) {
@@ -129,9 +132,12 @@ public class MainView extends StandardMainView {
                     window.getView().setQuiz(quiz, tema);
                     window.getView().buildLayout();
 
+                    window.addAfterCloseListener(event2 -> {
+                        calcMoedas();
+                    });
+
                     window.open();
 
-                    calcMoedas();
                 }
 
             });
@@ -168,7 +174,7 @@ public class MainView extends StandardMainView {
     }
 
     private void calcMoedas() {
-        final User user = (User) currentAuthentication.getUser();
+        final User user = dataManager.load(User.class).id((User)currentAuthentication.getUser()).one();
         int coins = 0;
         for (Questionario questionario: user.getQuestionarios()) {
             if (questionario.getEstado() == Estado.FINALIZADO) {
