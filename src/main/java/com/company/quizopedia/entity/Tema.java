@@ -36,6 +36,20 @@ public class Tema {
     @OneToMany(mappedBy = "tema")
     private List<Conteudo> conteudos;
 
+    @JoinTable(name = "TURMA_TEMA_LINK",
+            joinColumns = @JoinColumn(name = "TEMA_ID"),
+            inverseJoinColumns = @JoinColumn(name = "TURMA_ID"))
+    @ManyToMany
+    private List<Turma> turmas;
+
+    public List<Turma> getTurmas() {
+        return turmas;
+    }
+
+    public void setTurmas(List<Turma> turmas) {
+        this.turmas = turmas;
+    }
+
     public List<Conteudo> getConteudos() {
         return conteudos;
     }
