@@ -44,6 +44,8 @@ dependencies {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'io.jmix.flowui:jmix-flowui-test-assist'
+
+    implementation group: 'io.github.debajitkumarphukan', name: 'groq-java-sdk', version: '1.0.4'
 }
 
 configurations.implementation {

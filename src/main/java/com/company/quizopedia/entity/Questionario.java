@@ -6,6 +6,7 @@ import io.jmix.core.entity.annotation.OnDeleteInverse;
 import io.jmix.core.metamodel.annotation.JmixEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 import java.util.Date;
 import java.util.UUID;
@@ -40,6 +41,19 @@ public class Questionario {
     @JoinColumn(name = "USER_ID", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private User user;
+
+    @Positive(message = "{msg://com.company.quizopedia.entity/Questionario.pontuacaoMaxima.validation.Positive}")
+    @Column(name = "PONTUACAO_MAXIMA", nullable = false)
+    @NotNull
+    private Integer pontuacaoMaxima;
+
+    public Integer getPontuacaoMaxima() {
+        return pontuacaoMaxima;
+    }
+
+    public void setPontuacaoMaxima(Integer pontuacaoMaxima) {
+        this.pontuacaoMaxima = pontuacaoMaxima;
+    }
 
     public User getUser() {
         return user;
