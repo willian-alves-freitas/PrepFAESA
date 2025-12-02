@@ -6,5 +6,15 @@
         <item view="Tema.list" title="msg://com.company.quizopedia.view.tema/temaListView.title"/>
         <item view="Turma.list" title="msg://com.company.quizopedia.view.turma/turmaListView.title"/>
     </menu>
+    <menu id="security">
+        <item view="sec_ResourceRoleModel.list"
+              title="msg://io.jmix.securityflowui.view.resourcerole/resourceRoleModelListView.menu"/>
+        <item view="sec_RowLevelRoleModel.list"
+              title="msg://io.jmix.securityflowui.view.rowlevelrole/rowLevelRoleModelListView.menu"/>
+    </menu>
+    <menu id="datatools">
+        <item view="datatl_entityInspectorListView"
+              title="msg://io.jmix.datatoolsflowui.view.entityinspector/listTitle"/>
+    </menu>
 
 </menu-config>

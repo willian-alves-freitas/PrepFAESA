@@ -36,7 +36,24 @@
                 </footer>
             </section>
         </drawerLayout>
-        <initialLayout>
+        <initialLayout id="initialLayout">
+            <hbox margin="true" minWidth="95%" alignItems="CENTER" justifyContent="CENTER" alignSelf="CENTER">
+                <startSlot>
+                    <h2 text="Questionários"/>
+                </startSlot>
+                <endSlot>
+                    <icon icon="vaadin:coins"/>
+                    <h5 id="contadorMoedas"/>
+                </endSlot>
+            </hbox>
+            <textField id="pesquisaTemas" placeholder="msg://pesquisaTemas.placeholder" minWidth="95%"
+                       clearButtonVisible="true" alignSelf="CENTER">
+                <prefix>
+                    <icon icon="vaadin:search"/>
+                </prefix>
+            </textField>
+            <vbox id="vbox" padding="false" alignItems="CENTER" alignSelf="CENTER" width="95%" classNames="mt-s">
+            </vbox>
         </initialLayout>
     </appLayout>
 </mainView>
